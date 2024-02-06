@@ -1,0 +1,71 @@
+{% from "bootstrap5/form.html" import render_form %}
+{% include "header.html" %}
+
+<!-- Page Header-->
+<header class="masthead" style="background-image: url('https://www.google.com/imgres?imgurl=https%3A%2F%2Fi.ytimg.com%2Fvi%2FBor5lkRyeGo%2Fhqdefault.jpg&tbnid=5LRstxhDYEbxBM&vet=12ahUKEwjPhvKglJaEAxW0iq8BHQD8Ap0QMygCegQIARBX..i&imgrefurl=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DBor5lkRyeGo&docid=htz-fo0Xys4-eM&w=480&h=360&q=img%20example&ved=2ahUKEwjPhvKglJaEAxW0iq8BHQD8Ap0QMygCegQIARBX')">
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="post-heading">
+          <h1>{{ post.title }}</h1>
+          <h2 class="subheading">{{ post.subtitle }}</h2>
+          <span class="meta"
+            >Posted by
+            <a href="{{ url_for('contact') }}">{{ post.author.name }}</a>
+            on {{ post.date }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Post Content -->
+<article>
+  <div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        {{ post.body|safe }}
+        <!--TODO: Only show Edit Post button if user id is 1 (admin user) -->
+        <div class="d-flex justify-content-end mb-4">
+          {% if current_user.id == post.author.id%}
+          <a
+            class="btn btn-primary float-right"
+            href="{{url_for('edit_post', post_id=post.id)}}"
+            >Edit Post</a
+          >
+          {% endif %}
+        </div>
+        <hr class="my-4" />
+
+        <!-- Comments Area -->
+        <!-- TODO: Add a CKEditor for commenting below -->
+
+        <div class="comment">
+          <!-- TODO: Show all the comments on a post -->
+          <ul class="commentList">
+            {% for comment in post.comments: %}
+              <li>
+                <div class="commenterImage">
+                  <img src="{{ comment.comment_author.email | gravatar }}" />
+                </div>
+                <div class="commentText">
+                  <p>{{ comment.text|safe }}</p>
+                  <span class="date sub-text">{{comment.comment_author.name}}</span>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% if logged_in: %}
+          {{ ckeditor.load() }} {{ ckeditor.config(name='body') }} {{
+          render_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+        {% else: %}
+          <p>You can comment on this post once you <a href="{{ url_for('login') }}">Login</a></p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</article>
+
+{% include "footer.html" %}
