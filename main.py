@@ -102,7 +102,7 @@ def logged_in_user_only(f):
     @wraps(f)
     def decorated_func(*args, **kwargs):
         if not current_user.is_authenticated:
-            flash("You need to login.")
+            flash("You need to Login.")
             return redirect(url_for("login"))
         else:
             return f(*args, **kwargs)
@@ -248,13 +248,13 @@ def delete_post(post_id):
     return redirect(url_for('get_all_posts'))
 
 
-@app.route("/my_blogs")
-@logged_in_user_only
-def my_blogs():
-    if current_user.is_authenticated:
-        users_blogs = BlogPost.query.filter_by(author_id=current_user.id).all()
-        return render_template("my_blogs.html", blogs=users_blogs, logged_in=current_user.is_authenticated)
-    return render_template("my_blogs.html")
+@app.route("/<name>_blogs")
+def author_profile(name):
+    author_id = int(request.args.get("post_author_id"))
+    users_blogs = BlogPost.query.filter_by(author_id=author_id).all()
+    return render_template("my_blogs.html", blogs=users_blogs,
+                           logged_in=current_user.is_authenticated, author_name=name, author_id=author_id)
+
 
 
 @app.route("/contact", methods=["GET", "POST"])

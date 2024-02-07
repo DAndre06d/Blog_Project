@@ -11,7 +11,7 @@
           <h2 class="subheading">{{ post.subtitle }}</h2>
           <span class="meta"
             >Posted by
-            <a href="{{ url_for('contact') }}">{{ post.author.name }}</a>
+            <a href="{{ url_for('author_profile', name=post.author.name, post_author_id=post.author.id) }}">{{ post.author.name }}</a>
             on {{ post.date }}
           </span>
         </div>
@@ -51,7 +51,7 @@
                 </div>
                 <div class="commentText">
                   <p>{{ comment.text|safe }}</p>
-                  <span class="date sub-text">{{comment.comment_author.name}}</span>
+                  <span class="date sub-text">@{{comment.comment_author.name}}</span>
                 </div>
               </li>
             {% endfor %}

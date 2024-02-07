@@ -30,10 +30,10 @@
         <p class="post-meta">
           Posted by
           {% if not current_user.id == post.author.id: %}
-          <a href="{{ url_for('contact', post_subtitle=post.subtitle, post_author_id=post.author.id  ) }}">
+          <a href="{{ url_for('author_profile', name=post.author.name, post_author_id=post.author.id  ) }}">
             {{ post.author.name }}</a>
           {% else: %}
-          <span>{{ post.author.name }}</span>
+          <span>You</span>
           {% endif %}
           on {{post.date}}
           <!-- TODO: Only show delete button if user id is 1 (admin user) -->

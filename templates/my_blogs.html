@@ -1,20 +1,24 @@
 {% include "header.html" %}
 
 <!-- Page Header-->
-<header
-  class="masthead"
-  style="background-image: url('../static/assets/img/about-bg.jpg')"
->
+<header class="masthead" style="background-image: url('../static/assets/img/about-bg.jpg')">
   <div class="container position-relative px-4 px-lg-5">
     <div class="row gx-4 gx-lg-5 justify-content-center">
       <div class="col-md-10 col-lg-8 col-xl-7">
         <div class="page-heading">
-          <h1>{{ current_user.name.title() }}'s Blog posts</h1>
+          <h1>{{ author_name.upper() }}'S BLOG POST</h1>
           <span class="subheading">This is what I do.</span>
         </div>
       </div>
     </div>
   </div>
+  <!-- Button for contacting the user in the bottom right -->
+  {% if author_id != current_user.id  %}
+    <div class="position-fixed bottom-0 end-0 p-4">
+      <a href="{{url_for('contact', post_author_id=author_id)}}" class="btn btn-primary">
+        CONTACT {{author_name.upper()}} </a>
+    </div>
+  {% endif %}
 </header>
 <!-- Main Content-->
 <main class="mb-4">
@@ -29,10 +33,16 @@
           </a>
           <p class="post-meta">
             Posted by
+            {% if post.author.id != current_user.id: %}
             <a href="#">{{ post.author.name }}</a>
+            {% else: %}
+            <span>you</span>
+            {% endif %}
             on {{post.date}}
             <!-- TODO: Only show delete button if user id is 1 (admin user) -->
+            {% if post.author.id == current_user.id: %}
               <a href="{{url_for('delete_post', post_id=post.id) }}" style="color:red">✘ Delete this post</a>
+            {% endif %}
           </p>
         </div>
         <!-- Divider-->
