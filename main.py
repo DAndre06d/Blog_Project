@@ -118,6 +118,14 @@ gravatar = Gravatar(app,
                     use_ssl=False,
                     base_url=None)
 
+def is_image_url(url):
+    # List of common image file extensions
+    image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg', '.webp']
+
+    # Check if the URL ends with any of the image file extensions
+    return any(url.lower().endswith(ext) for ext in image_extensions)
+
+
 
 
 # TODO: Use Werkzeug to hash the user's password when creating a new user.
@@ -201,17 +209,24 @@ def show_post(post_id):
 def add_new_post():
     form = CreatePostForm()
     if form.validate_on_submit():
-        new_post = BlogPost(
-            title=form.title.data,
-            subtitle=form.subtitle.data,
-            body=form.body.data,
-            img_url=form.img_url.data,
-            author=current_user,
-            date=date.today().strftime("%B %d, %Y")
-        )
-        db.session.add(new_post)
-        db.session.commit()
-        return redirect(url_for("get_all_posts"))
+        check_image = is_image_url(form.img_url.data)
+        if check_image:
+            new_post = BlogPost(
+                title=form.title.data,
+                subtitle=form.subtitle.data,
+                body=form.body.data,
+                img_url=form.img_url.data,
+                author=current_user,
+                date=date.today().strftime("%B %d, %Y")
+            )
+            db.session.add(new_post)
+            db.session.commit()
+            return redirect(url_for("get_all_posts"))
+        else:
+            flash("Please enter a valid Image URL. The URL must end with '.jpg', '.jpeg', '.png', '.gif', '.bmp', "
+                  "'.svg', '.webp'")
+            return redirect(url_for("add_new_post"))
+
     return render_template("make-post.html", form=form, logged_in=current_user.is_authenticated)
 
 

@@ -31,7 +31,7 @@ include "header.html" %}
         {% with messages = get_flashed_messages() %}
           {% if messages: %}
             {% for message in messages: %}
-              <p style="display: flex, justify-content: center, align-items: center"> {{ message }}</p>
+              <p style="display: flex; justify-content: center; align-items: center; color: red;">{{ message }}</p>
             {% endfor %}
           {% endif %}
         {% endwith %}
